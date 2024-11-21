@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask AI</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            background-color: #f7941d;
+            color: white;
+            padding: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #f7941d;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Ask AI Anything!
+    </header>
+
+    <div class="container">
+        <textarea id="question" placeholder="Type your question here..."></textarea>
+        <button onclick="askAI()">Ask AI</button>
+        <div id="response" class="response"></div>
+    </div>
+
+    <script>
+        async function askAI() {
+            const question = document.getElementById('question').value;
+            const responseDiv = document.getElementById('response');
+
+            // Clear the response area
+            responseDiv.textContent = "Thinking...";
+
+            // OpenAI API example
+            const apiUrl = "https://api.openai.com/v1/completions";
+            const apiKey = "your-openai-api-key"; // Replace with your OpenAI API key
+
+            const data = {
+                model: "text-davinci-003",
+                prompt: question,
+                max_tokens: 150,
+                temperature: 0.7
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    responseDiv.textContent = result.choices[0].text.trim();
+                } else {
+                    responseDiv.textContent = "Error: Unable to get a response. Check your API key and try again.";
+                }
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
